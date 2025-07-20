@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تسجيل الدخول - نظام إدارة حجوزات الشاليه</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../public/supabase-config.js"></script>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fchaletboo1880back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.6"></script>
+</head>
+<body class="bg-gradient-to-br from-primary-50 to-accent-100 min-h-screen flex items-center justify-center p-4">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5">
+        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" fill-rule="evenodd">
+                <g fill="#2563EB" fill-opacity="0.1">
+                    <circle cx="30" cy="30" r="4"/>
+                    <circle cx="10" cy="10" r="2"/>
+                    <circle cx="50" cy="10" r="2"/>
+                    <circle cx="10" cy="50" r="2"/>
+                    <circle cx="50" cy="50" r="2"/>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <!-- Login Container -->
+    <div class="w-full max-w-md relative z-10">
+        <!-- Logo and Brand Section -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-2xl mb-4 shadow-lg">
+                <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm0 2.84L18 11v8h-2v-6H8v6H6v-8l6-5.16z"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-text-primary mb-2">نظام إدارة الشاليه</h1>
+            <p class="text-text-secondary">مرحباً بك في نظام إدارة حجوزات الشاليه</p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="card-elevated animate-fade-in">
+            <!-- Auth Mode Toggle -->
+            <div class="flex mb-6 bg-secondary-100 rounded-lg p-1">
+                <button id="loginModeBtn" class="flex-1 px-4 py-2 text-sm font-medium rounded-md bg-primary text-white transition-all">
+                    تسجيل الدخول
+                </button>
+                <button id="signupModeBtn" class="flex-1 px-4 py-2 text-sm font-medium rounded-md text-text-secondary transition-all">
+                    إنشاء حساب
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-semibold text-text-primary mb-2">تسجيل الدخول</h2>
+                    <p class="text-text-secondary text-sm">أدخل بيانات الدخول للوصول إلى حسابك</p>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMessage" class="hidden mb-4 p-3 bg-error-100 border border-error-200 rounded-lg">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-error ml-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="text-error text-sm font-medium" id="errorText">خطأ في بيانات الدخول</span>
+                    </div>
+                </div>
+
+                <!-- Auth Form -->
+                <form id="authForm" class="space-y-4">
+                    <!-- Full Name (for signup only) -->
+                    <div id="fullNameField" class="hidden">
+                        <label for="fullName" class="block text-sm font-medium text-text-primary mb-2">الاسم الكامل</label>
+                        <div class="relative">
+                            <input type="text" id="fullName" name="fullName" class="input-field pr-10 text-right" placeholder="أدخل الاسم الكامل" autocomplete="name" />
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <svg class="w-5 h-5 text-secondary-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-text-primary mb-2">البريد الإلكتروني</label>
+                        <div class="relative">
+                            <input type="email" id="email" name="email" class="input-field pr-10 text-left" placeholder="example@email.com" required autocomplete="email" />
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <svg class="w-5 h-5 text-secondary-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-text-primary mb-2">كلمة المرور</label>
+                        <div class="relative">
+                            <input type="password" id="password" name="password" class="input-field pr-10 text-right" placeholder="أدخل كلمة المرور" required autocomplete="current-password" />
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <svg class="w-5 h-5 text-secondary-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <button type="button" id="togglePassword" class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                                <svg class="w-5 h-5 text-secondary-400 hover:text-secondary-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember Me (login only) -->
+                    <div id="rememberMeField" class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-secondary-300 rounded" />
+                            <label for="remember" class="mr-2 block text-sm text-text-secondary">تذكرني</label>
+                        </div>
+                        <div class="text-sm">
+                            <a href="javascript:void(0)" class="font-medium text-primary hover:text-primary-700 transition-colors">نسيت كلمة المرور؟</a>
+                        </div>
+                    </div>
+
+                    <!-- Auth Button -->
+                    <button type="submit" id="authButton" class="w-full btn-primary py-3 text-base font-medium transition-all duration-200 hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span id="authButtonText">تسجيل الدخول</span>
+                        <svg id="authSpinner" class="hidden animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8">
+            <p class="text-sm text-text-secondary">© 2025 نظام إدارة الشاليه. جميع الحقوق محفوظة.</p>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const loginModeBtn = document.getElementById('loginModeBtn');
+        const signupModeBtn = document.getElementById('signupModeBtn');
+        const authForm = document.getElementById('authForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const fullNameInput = document.getElementById('fullName');
+        const fullNameField = document.getElementById('fullNameField');
+        const rememberMeField = document.getElementById('rememberMeField');
+        const authButton = document.getElementById('authButton');
+        const authButtonText = document.getElementById('authButtonText');
+        const authSpinner = document.getElementById('authSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const togglePassword = document.getElementById('togglePassword');
+
+        let isLoginMode = true;
+
+        // Toggle between login and signup modes
+        loginModeBtn.addEventListener('click', () => {
+            isLoginMode = true;
+            updateAuthMode();
+        });
+
+        signupModeBtn.addEventListener('click', () => {
+            isLoginMode = false;
+            updateAuthMode();
+        });
+
+        function updateAuthMode() {
+            if (isLoginMode) {
+                // Login mode styling
+                loginModeBtn.classList.add('bg-primary', 'text-white');
+                loginModeBtn.classList.remove('text-text-secondary');
+                signupModeBtn.classList.remove('bg-primary', 'text-white');
+                signupModeBtn.classList.add('text-text-secondary');
+
+                // Hide/show fields
+                fullNameField.classList.add('hidden');
+                rememberMeField.classList.remove('hidden');
+                
+                // Update text
+                authButtonText.textContent = 'تسجيل الدخول';
+                document.querySelector('#loginForm h2').textContent = 'تسجيل الدخول';
+                document.querySelector('#loginForm p').textContent = 'أدخل بيانات الدخول للوصول إلى حسابك';
+                
+                // Update autocomplete
+                passwordInput.setAttribute('autocomplete', 'current-password');
+            } else {
+                // Signup mode styling
+                signupModeBtn.classList.add('bg-primary', 'text-white');
+                signupModeBtn.classList.remove('text-text-secondary');
+                loginModeBtn.classList.remove('bg-primary', 'text-white');
+                loginModeBtn.classList.add('text-text-secondary');
+
+                // Hide/show fields
+                fullNameField.classList.remove('hidden');
+                rememberMeField.classList.add('hidden');
+                
+                // Update text
+                authButtonText.textContent = 'إنشاء حساب';
+                document.querySelector('#loginForm h2').textContent = 'إنشاء حساب جديد';
+                document.querySelector('#loginForm p').textContent = 'أدخل بياناتك لإنشاء حساب جديد';
+                
+                // Update autocomplete
+                passwordInput.setAttribute('autocomplete', 'new-password');
+            }
+            
+            // Clear form and hide errors
+            authForm.reset();
+            hideError();
+        }
+
+        // Toggle password visibility
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle icon
+            const icon = this.querySelector('svg');
+            if (type === 'text') {
+                icon.innerHTML = '<path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3.05 3.05m6.828 6.828L16.95 16.95"/>';
+            } else {
+                icon.innerHTML = '<path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>';
+            }
+        });
+
+        // Hide error message when user starts typing
+        [emailInput, passwordInput, fullNameInput].forEach(input => {
+            input.addEventListener('input', function() {
+                hideError();
+            });
+        });
+
+        // Form submission
+        authForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            const fullName = fullNameInput.value.trim();
+            
+            // Basic validation
+            if (!email || !password) {
+                showError('يرجى إدخال البريد الإلكتروني وكلمة المرور');
+                return;
+            }
+
+            if (!isLoginMode && !fullName) {
+                showError('يرجى إدخال الاسم الكامل');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('كلمة المرور يجب أن تكون على الأقل 6 أحرف');
+                return;
+            }
+            
+            // Show loading state
+            setLoadingState(true);
+            hideError();
+            
+            try {
+                let result;
+                
+                if (isLoginMode) {
+                    // Login user
+                    result = await Auth.signIn(email, password);
+                } else {
+                    // Sign up user
+                    result = await Auth.signUp(email, password, {
+                        full_name: fullName
+                    });
+                }
+                
+                if (result.error) {
+                    throw result.error;
+                }
+                
+                if (isLoginMode) {
+                    // Success for login
+                    authButtonText.textContent = 'تم تسجيل الدخول بنجاح!';
+                    authButton.classList.add('bg-success');
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = 'dashboard_overview.html';
+                    }, 1000);
+                } else {
+                    // Success for signup
+                    authButtonText.textContent = 'تم إنشاء الحساب بنجاح!';
+                    authButton.classList.add('bg-success');
+                    
+                    // Show success message and switch to login
+                    setTimeout(() => {
+                        isLoginMode = true;
+                        updateAuthMode();
+                        showError('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول', 'success');
+                        setLoadingState(false);
+                    }, 1500);
+                }
+                
+            } catch (error) {
+                setLoadingState(false);
+                const errorMessage = Utils.handleAuthError(error);
+                showError(errorMessage);
+                
+                // Shake animation for error
+                authForm.classList.add('animate-pulse');
+                setTimeout(() => {
+                    authForm.classList.remove('animate-pulse');
+                }, 500);
+            }
+        });
+
+        function setLoadingState(loading) {
+            authButton.disabled = loading;
+            if (loading) {
+                authButtonText.textContent = isLoginMode ? 'جاري تسجيل الدخول...' : 'جاري إنشاء الحساب...';
+                authSpinner.classList.remove('hidden');
+            } else {
+                authButtonText.textContent = isLoginMode ? 'تسجيل الدخول' : 'إنشاء حساب';
+                authSpinner.classList.add('hidden');
+                authButton.classList.remove('bg-success');
+            }
+        }
+
+        function showError(message, type = 'error') {
+            errorText.textContent = message;
+            errorMessage.classList.remove('hidden');
+            
+            if (type === 'success') {
+                errorMessage.classList.remove('bg-error-100', 'border-error-200');
+                errorMessage.classList.add('bg-success-100', 'border-success-200');
+                errorMessage.querySelector('svg').classList.remove('text-error');
+                errorMessage.querySelector('svg').classList.add('text-success');
+                errorText.classList.remove('text-error');
+                errorText.classList.add('text-success');
+            } else {
+                errorMessage.classList.remove('bg-success-100', 'border-success-200');
+                errorMessage.classList.add('bg-error-100', 'border-error-200');
+                errorMessage.querySelector('svg').classList.remove('text-success');
+                errorMessage.querySelector('svg').classList.add('text-error');
+                errorText.classList.remove('text-success');
+                errorText.classList.add('text-error');
+            }
+            
+            errorMessage.classList.add('animate-slide-up');
+            
+            // Add error styling to inputs
+            emailInput.classList.add('input-error');
+            passwordInput.classList.add('input-error');
+        }
+
+        function hideError() {
+            errorMessage.classList.add('hidden');
+            emailInput.classList.remove('input-error');
+            passwordInput.classList.remove('input-error');
+            fullNameInput.classList.remove('input-error');
+        }
+
+        // Check if user is already logged in
+        async function checkAuth() {
+            const isAuth = await Auth.isAuthenticated();
+            if (isAuth) {
+                window.location.href = 'dashboard_overview.html';
+            }
+        }
+
+        // Auto-focus email field
+        emailInput.focus();
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                if (document.activeElement === emailInput) {
+                    passwordInput.focus();
+                } else if (document.activeElement === passwordInput && !isLoginMode) {
+                    fullNameInput.focus();
+                }
+            }
+        });
+
+        // Initialize
+        checkAuth();
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

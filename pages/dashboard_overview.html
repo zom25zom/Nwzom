@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لوحة التحكم - نظام إدارة حجوزات الشاليه</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../public/supabase-config.js"></script>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fchaletboo1880back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.6"></script>
+</head>
+<body class="bg-surface min-h-screen">
+    <!-- Header -->
+    <header class="bg-background shadow-sm border-b border-secondary-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center ml-3">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm0 2.84L18 11v8h-2v-6H8v6H6v-8l6-5.16z"/>
+                            </svg>
+                        </div>
+                        <h1 class="text-lg font-semibold text-text-primary">نظام إدارة الشاليه</h1>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-8 space-x-reverse">
+                    <a href="dashboard_overview.html" class="text-primary font-medium px-3 py-2 rounded-md bg-primary-50">لوحة التحكم</a>
+                    <a href="add_new_booking.html" class="text-text-secondary hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary-50">إضافة حجز</a>
+                    <a href="view_all_bookings.html" class="text-text-secondary hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary-50">عرض الحجوزات</a>
+                    <a href="revenue_analytics.html" class="text-text-secondary hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary-50">تحليل الإيرادات</a>
+                </nav>
+
+                <!-- User Profile and Mobile Menu -->
+                <div class="flex items-center">
+                    <!-- User Profile Dropdown -->
+                    <div class="relative ml-3">
+                        <div class="flex items-center">
+                            <button id="userMenuButton" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+                                <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center ml-2">
+                                    <svg class="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <span class="text-text-primary font-medium" id="currentUserName">جاري التحميل...</span>
+                                <svg class="w-4 h-4 text-text-secondary mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Dropdown Menu -->
+                        <div id="userDropdown" class="hidden absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-background ring-1 ring-black ring-opacity-5">
+                            <div class="py-1">
+                                <a href="javascript:void(0)" class="block px-4 py-2 text-sm text-text-secondary hover:bg-surface">الملف الشخصي</a>
+                                <a href="javascript:void(0)" class="block px-4 py-2 text-sm text-text-secondary hover:bg-surface">الإعدادات</a>
+                                <hr class="my-1" />
+                                <button id="logoutButton" class="block w-full text-right px-4 py-2 text-sm text-error hover:bg-error-100">تسجيل الخروج</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobileMenuButton" class="md:hidden mr-2 p-2 rounded-md text-text-secondary hover:text-primary hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-background border-t border-secondary-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="dashboard_overview.html" class="block px-3 py-2 rounded-md text-primary font-medium bg-primary-50">لوحة التحكم</a>
+                <a href="add_new_booking.html" class="block px-3 py-2 rounded-md text-text-secondary hover:text-primary hover:bg-primary-50">إضافة حجز</a>
+                <a href="view_all_bookings.html" class="block px-3 py-2 rounded-md text-text-secondary hover:text-primary hover:bg-primary-50">عرض الحجوزات</a>
+                <a href="revenue_analytics.html" class="block px-3 py-2 rounded-md text-text-secondary hover:text-primary hover:bg-primary-50">تحليل الإيرادات</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-8" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3 space-x-reverse">
+                <li class="inline-flex items-center">
+                    <svg class="w-4 h-4 text-text-secondary ml-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                    </svg>
+                    <span class="text-text-primary font-medium">لوحة التحكم</span>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-text-primary mb-2">مرحباً بك، <span id="welcomeUserName">جاري التحميل...</span></h2>
+            <p class="text-text-secondary">إليك نظرة عامة على أداء الشاليه اليوم</p>
+        </div>
+
+        <!-- Key Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Bookings This Month -->
+            <div class="card-elevated hover:shadow-lg transition-shadow duration-200">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mr-4">
+                        <p class="text-sm font-medium text-text-secondary">إجمالي الحجوزات هذا الشهر</p>
+                        <p class="text-2xl font-bold text-text-primary data-mono" id="totalBookings">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Occupancy Rate -->
+            <div class="card-elevated hover:shadow-lg transition-shadow duration-200">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-success-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-success" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mr-4">
+                        <p class="text-sm font-medium text-text-secondary">معدل الإشغال الحالي</p>
+                        <p class="text-2xl font-bold text-text-primary data-mono" id="occupancyRate">0%</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Payments -->
+            <div class="card-elevated hover:shadow-lg transition-shadow duration-200">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-warning-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-warning" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mr-4">
+                        <p class="text-sm font-medium text-text-secondary">المدفوعات المعلقة</p>
+                        <p class="text-2xl font-bold text-text-primary data-mono" id="pendingPayments">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Revenue -->
+            <div class="card-elevated hover:shadow-lg transition-shadow duration-200">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-accent-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mr-4">
+                        <p class="text-sm font-medium text-text-secondary">إيرادات هذا الشهر</p>
+                        <p class="text-2xl font-bold text-text-primary data-mono" id="monthlyRevenue">0 ريال</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Bookings Preview -->
+        <div class="lg:col-span-2">
+            <div class="card-elevated">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-text-primary">الحجوزات الأخيرة</h3>
+                    <a href="view_all_bookings.html" class="text-primary hover:text-primary-700 text-sm font-medium">عرض الكل</a>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="border-b border-secondary-200">
+                                <th class="text-right py-3 px-4 text-sm font-medium text-text-secondary">اسم العميل</th>
+                                <th class="text-right py-3 px-4 text-sm font-medium text-text-secondary">تاريخ الحجز</th>
+                                <th class="text-right py-3 px-4 text-sm font-medium text-text-secondary">المدة</th>
+                                <th class="text-right py-3 px-4 text-sm font-medium text-text-secondary">المبلغ</th>
+                                <th class="text-right py-3 px-4 text-sm font-medium text-text-secondary">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-secondary-200" id="recentBookingsTable">
+                            <tr>
+                                <td colspan="5" class="py-8 text-center text-text-secondary">جاري تحميل البيانات...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions and Recent Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Quick Actions -->
+            <div class="lg:col-span-1">
+                <div class="card-elevated">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">الإجراءات السريعة</h3>
+                    <div class="space-y-3">
+                        <a href="add_new_booking.html" class="w-full btn-primary flex items-center justify-center py-3 text-base font-medium transition-all duration-200 hover:shadow-lg">
+                            <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                            </svg>
+                            إضافة حجز جديد
+                        </a>
+                        <a href="view_all_bookings.html" class="w-full btn-secondary flex items-center justify-center py-3 text-base font-medium transition-all duration-200 hover:shadow-lg">
+                            <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            عرض جميع الحجوزات
+                        </a>
+                        <a href="revenue_analytics.html" class="w-full btn-secondary flex items-center justify-center py-3 text-base font-medium transition-all duration-200 hover:shadow-lg">
+                            <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+                            </svg>
+                            تحليل الإيرادات
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bookings Preview -->
+            <div class="lg:col-span-2">
+                <div class="card-elevated">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-text-primary">الحجوزات الأخيرة</h3>
+                        <a href="view_all_bookings.html" class="text-primary hover:text-primary-700 text-sm font-medium">عرض الكل</a>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="border-b border-secondary-200">
+                                    <th class="text-right py-3 px-4 text-sm font-medium text-text-secondary">اسم العميل</th>
+                                    <th class="text-right py-3 px-4 text-sm font-medium text-text-secondary">تاريخ الحجز</th>
+                                    <th class="text-right py-3 px-4 text-sm font-medium text-text-secondary">المدة</th>
+                                    <th class="text-right py-3 px-4 text-sm font-medium text-text-secondary">المبلغ</th>
+                                    <th class="text-right py-3 px-4 text-sm font-medium text-text-secondary">الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-secondary-200">
+                                <tr class="hover:bg-surface transition-colors">
+                                    <td class="py-3 px-4 text-sm text-text-primary font-medium">أحمد محمد العلي</td>
+                                    <td class="py-3 px-4 text-sm text-text-secondary data-mono">15/07/2025</td>
+                                    <td class="py-3 px-4 text-sm text-text-secondary">3 أيام</td>
+                                    <td class="py-3 px-4 text-sm text-text-primary font-medium data-mono">2,500 ريال</td>
+                                    <td class="py-3 px-4">
+                                        <span class="status-success">مؤكد</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-surface transition-colors">
+                                    <td class="py-3 px-4 text-sm text-text-primary font-medium">سارة أحمد الخالد</td>
+                                    <td class="py-3 px-4 text-sm text-text-secondary data-mono">14/07/2025</td>
+                                    <td class="py-3 px-4 text-sm text-text-secondary">2 أيام</td>
+                                    <td class="py-3 px-4 text-sm text-text-primary font-medium data-mono">1,800 ريال</td>
+                                    <td class="py-3 px-4">
+                                        <span class="status-warning">معلق</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-surface transition-colors">
+                                    <td class="py-3 px-4 text-sm text-text-primary font-medium">محمد عبدالله الشمري</td>
+                                    <td class="py-3 px-4 text-sm text-text-secondary data-mono">13/07/2025</td>
+                                    <td class="py-3 px-4 text-sm text-text-secondary">5 أيام</td>
+                                    <td class="py-3 px-4 text-sm text-text-primary font-medium data-mono">4,200 ريال</td>
+                                    <td class="py-3 px-4">
+                                        <span class="status-success">مؤكد</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-surface transition-colors">
+                                    <td class="py-3 px-4 text-sm text-text-primary font-medium">فاطمة علي الزهراني</td>
+                                    <td class="py-3 px-4 text-sm text-text-secondary data-mono">12/07/2025</td>
+                                    <td class="py-3 px-4 text-sm text-text-secondary">1 يوم</td>
+                                    <td class="py-3 px-4 text-sm text-text-primary font-medium data-mono">900 ريال</td>
+                                    <td class="py-3 px-4">
+                                        <span class="status-success">مؤكد</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-surface transition-colors">
+                                    <td class="py-3 px-4 text-sm text-text-primary font-medium">عبدالرحمن سعد القحطاني</td>
+                                    <td class="py-3 px-4 text-sm text-text-secondary data-mono">11/07/2025</td>
+                                    <td class="py-3 px-4 text-sm text-text-secondary">4 أيام</td>
+                                    <td class="py-3 px-4 text-sm text-text-primary font-medium data-mono">3,600 ريال</td>
+                                    <td class="py-3 px-4">
+                                        <span class="status-success">مؤكد</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Trend Chart -->
+        <div class="card-elevated">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-text-primary">اتجاه الإيرادات الأسبوعية</h3>
+                <div class="flex items-center space-x-2 space-x-reverse">
+                    <button class="text-sm text-text-secondary hover:text-primary">هذا الأسبوع</button>
+                    <span class="text-text-secondary">|</span>
+                    <button class="text-sm text-primary font-medium">هذا الشهر</button>
+                </div>
+            </div>
+            
+            <!-- Simple Bar Chart -->
+            <div class="h-64 flex items-end justify-between space-x-2 space-x-reverse">
+                <div class="flex flex-col items-center">
+                    <div class="w-12 bg-primary rounded-t" style="height: 120px;"></div>
+                    <span class="text-xs text-text-secondary mt-2">السبت</span>
+                    <span class="text-xs text-text-primary font-medium data-mono">3,200</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-12 bg-primary rounded-t" style="height: 180px;"></div>
+                    <span class="text-xs text-text-secondary mt-2">الأحد</span>
+                    <span class="text-xs text-text-primary font-medium data-mono">4,800</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-12 bg-primary rounded-t" style="height: 90px;"></div>
+                    <span class="text-xs text-text-secondary mt-2">الاثنين</span>
+                    <span class="text-xs text-text-primary font-medium data-mono">2,400</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-12 bg-primary rounded-t" style="height: 150px;"></div>
+                    <span class="text-xs text-text-secondary mt-2">الثلاثاء</span>
+                    <span class="text-xs text-text-primary font-medium data-mono">4,000</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-12 bg-primary rounded-t" style="height: 200px;"></div>
+                    <span class="text-xs text-text-secondary mt-2">الأربعاء</span>
+                    <span class="text-xs text-text-primary font-medium data-mono">5,300</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-12 bg-primary rounded-t" style="height: 240px;"></div>
+                    <span class="text-xs text-text-secondary mt-2">الخميس</span>
+                    <span class="text-xs text-text-primary font-medium data-mono">6,400</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-12 bg-accent rounded-t" style="height: 160px;"></div>
+                    <span class="text-xs text-text-secondary mt-2">الجمعة</span>
+                    <span class="text-xs text-text-primary font-medium data-mono">4,300</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentUser = null;
+        let userBookings = [];
+
+        // Initialize dashboard
+        async function initializeDashboard() {
+            // Check authentication
+            const isAuth = await Utils.requireAuth();
+            if (!isAuth) return;
+
+            // Get current user
+            currentUser = await Auth.getCurrentUser();
+            if (!currentUser) {
+                window.location.href = 'login_authentication.html';
+                return;
+            }
+
+            // Update UI with user info
+            updateUserInfo();
+
+            // Load dashboard data
+            await loadDashboardData();
+        }
+
+        // Update user information in UI
+        function updateUserInfo() {
+            const userName = Utils.formatUserName(currentUser);
+            document.getElementById('currentUserName').textContent = userName;
+            document.getElementById('welcomeUserName').textContent = userName;
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Get user's bookings
+                const { data: bookings, error } = await Database.getBookings(currentUser.id);
+                
+                if (error) {
+                    console.error('Error loading bookings:', error);
+                    showError('حدث خطأ في تحميل البيانات');
+                    return;
+                }
+
+                userBookings = bookings || [];
+                updateDashboardMetrics();
+                updateRecentBookingsTable();
+                
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showError('حدث خطأ في تحميل لوحة التحكم');
+            }
+        }
+
+        // Update dashboard metrics
+        function updateDashboardMetrics() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            // Filter bookings for current month
+            const thisMonthBookings = userBookings.filter(booking => {
+                const bookingDate = new Date(booking.created_at);
+                return bookingDate.getMonth() === currentMonth && bookingDate.getFullYear() === currentYear;
+            });
+
+            // Calculate metrics
+            const totalBookings = thisMonthBookings.length;
+            const pendingPayments = userBookings.filter(booking => 
+                booking.payment_status === 'pending' || booking.payment_status === 'partial'
+            ).length;
+            
+            const monthlyRevenue = thisMonthBookings.reduce((sum, booking) => 
+                sum + (parseFloat(booking.amount_paid) || 0), 0
+            );
+
+            // Calculate occupancy rate (simplified)
+            const currentBookings = userBookings.filter(booking => {
+                const checkIn = new Date(booking.check_in_date);
+                const checkOut = new Date(booking.check_out_date);
+                return checkIn <= now && checkOut >= now;
+            });
+            const occupancyRate = currentBookings.length > 0 ? Math.min(currentBookings.length * 20, 100) : 0;
+
+            // Update UI
+            document.getElementById('totalBookings').textContent = totalBookings;
+            document.getElementById('occupancyRate').textContent = `${occupancyRate}%`;
+            document.getElementById('pendingPayments').textContent = pendingPayments;
+            document.getElementById('monthlyRevenue').textContent = `${monthlyRevenue.toLocaleString('ar-SA')} ريال`;
+        }
+
+        // Update recent bookings table
+        function updateRecentBookingsTable() {
+            const tableBody = document.getElementById('recentBookingsTable');
+            
+            if (userBookings.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="py-8 text-center text-text-secondary">
+                            لا توجد حجوزات حالياً
+                            <br>
+                            <a href="add_new_booking.html" class="text-primary hover:text-primary-700 text-sm font-medium">إضافة حجز جديد</a>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Show recent 5 bookings
+            const recentBookings = userBookings.slice(0, 5);
+            const rows = recentBookings.map(booking => {
+                const checkInDate = new Date(booking.check_in_date).toLocaleDateString('ar-SA');
+                const statusClass = getStatusClass(booking.payment_status);
+                const statusText = getStatusText(booking.payment_status);
+                
+                return `
+                    <tr class="hover:bg-surface transition-colors">
+                        <td class="py-3 px-4 text-sm text-text-primary font-medium">${booking.customer_name}</td>
+                        <td class="py-3 px-4 text-sm text-text-secondary data-mono">${checkInDate}</td>
+                        <td class="py-3 px-4 text-sm text-text-secondary">${booking.number_of_nights} ${booking.number_of_nights === 1 ? 'ليلة' : 'ليالي'}</td>
+                        <td class="py-3 px-4 text-sm text-text-primary font-medium data-mono">${parseFloat(booking.total_amount).toLocaleString('ar-SA')} ريال</td>
+                        <td class="py-3 px-4">
+                            <span class="${statusClass}">${statusText}</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            tableBody.innerHTML = rows;
+        }
+
+        // Get status class for styling
+        function getStatusClass(status) {
+            switch(status) {
+                case 'paid': return 'status-success';
+                case 'partial': return 'status-warning';
+                case 'pending': return 'status-warning';
+                default: return 'status-secondary';
+            }
+        }
+
+        // Get status text in Arabic
+        function getStatusText(status) {
+            switch(status) {
+                case 'paid': return 'مدفوع';
+                case 'partial': return 'دفع جزئي';
+                case 'pending': return 'في انتظار الدفع';
+                default: return 'غير محدد';
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            // Create error toast or use existing error display
+            console.error(message);
+        }
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const userMenuButton = document.getElementById('userMenuButton');
+        const userDropdown = document.getElementById('userDropdown');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        userMenuButton.addEventListener('click', () => {
+            userDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userMenuButton.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+            if (!mobileMenuButton.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+
+        // Logout functionality
+        const logoutButton = document.getElementById('logoutButton');
+        logoutButton.addEventListener('click', async () => {
+            try {
+                const { error } = await Auth.signOut();
+                if (error) {
+                    console.error('Logout error:', error);
+                }
+                window.location.href = 'login_authentication.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = 'login_authentication.html';
+            }
+        });
+
+        // Initialize dashboard on page load
+        initializeDashboard();
+
+        // Add animation to metric cards on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card-elevated');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-fade-in');
+                }, index * 100);
+            });
+        });
+
+        // Update current time display
+        function updateCurrentTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            const timeString = now.toLocaleDateString('ar-SA', options);
+            
+            // You can add a time display element if needed
+            console.log('Current time:', timeString);
+        }
+
+        // Update time every minute
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 60000);
+
+        // Simulate real-time data updates (optional)
+        function simulateDataUpdates() {
+            // This could be used to update metrics in real-time
+            // For now, it's just a placeholder for future enhancements
+        }
+
+        // Initialize data updates
+        simulateDataUpdates();
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

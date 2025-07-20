@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>عرض جميع الحجوزات - نظام إدارة حجوزات الشاليه</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+    </style>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fchaletboo1880back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.6"></script>
+</head>
+<body class="bg-surface min-h-screen">
+    <!-- Header -->
+    <header class="bg-background shadow-sm border-b border-secondary-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm0 2.84L18 11v8h-2v-6H8v6H6v-8l6-5.16z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="mr-3">
+                            <h1 class="text-lg font-semibold text-text-primary">نظام إدارة الشاليه</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-8 space-x-reverse">
+                    <a href="dashboard_overview.html" class="text-text-secondary hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium">
+                        لوحة التحكم
+                    </a>
+                    <a href="add_new_booking.html" class="text-text-secondary hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium">
+                        حجز جديد
+                    </a>
+                    <a href="view_all_bookings.html" class="text-primary bg-primary-50 px-3 py-2 rounded-md text-sm font-medium">
+                        جميع الحجوزات
+                    </a>
+                    <a href="revenue_analytics.html" class="text-text-secondary hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium">
+                        تحليل الإيرادات
+                    </a>
+                </nav>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobileMenuButton" class="text-text-secondary hover:text-primary p-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- User Menu -->
+                <div class="flex items-center">
+                    <div class="relative">
+                        <button id="userMenuButton" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-primary">
+                            <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <span class="mr-2 text-text-primary font-medium" id="currentUserName">المدير</span>
+                        </button>
+                        
+                        <!-- User Dropdown -->
+                        <div id="userDropdown" class="hidden absolute left-0 mt-2 w-48 bg-background rounded-md shadow-lg py-1 z-50">
+                            <a href="javascript:void(0)" onclick="logout()" class="block px-4 py-2 text-sm text-text-secondary hover:bg-surface">
+                                تسجيل الخروج
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div id="mobileMenu" class="hidden md:hidden bg-background border-t border-secondary-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="dashboard_overview.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-md text-base font-medium">
+                    لوحة التحكم
+                </a>
+                <a href="add_new_booking.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-md text-base font-medium">
+                    حجز جديد
+                </a>
+                <a href="view_all_bookings.html" class="block px-3 py-2 text-primary bg-primary-50 rounded-md text-base font-medium">
+                    جميع الحجوزات
+                </a>
+                <a href="revenue_analytics.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-md text-base font-medium">
+                    تحليل الإيرادات
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-6" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-4 space-x-reverse">
+                <li>
+                    <a href="dashboard_overview.html" class="text-text-secondary hover:text-primary transition-colors">
+                        لوحة التحكم
+                    </a>
+                </li>
+                <li>
+                    <svg class="w-4 h-4 text-secondary-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </li>
+                <li>
+                    <span class="text-text-primary font-medium">جميع الحجوزات</span>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-text-primary mb-2">جميع الحجوزات</h1>
+                <p class="text-text-secondary">إدارة وعرض جميع حجوزات الشاليه</p>
+            </div>
+            <div class="mt-4 sm:mt-0">
+                <a href="add_new_booking.html" class="btn-primary inline-flex items-center">
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    حجز جديد
+                </a>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="card mb-6">
+            <div class="space-y-4">
+                <!-- Search Bar -->
+                <div class="relative">
+                    <input type="text" id="searchInput" class="input-field pr-10 text-right" placeholder="البحث في الحجوزات (اسم العميل، رقم الحجز، الملاحظات...)" />
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <svg class="w-5 h-5 text-secondary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Filter Chips -->
+                <div class="flex flex-wrap gap-2">
+                    <button id="filterAll" class="filter-chip active" data-filter="all">
+                        جميع الحجوزات
+                    </button>
+                    <button id="filterPaid" class="filter-chip" data-filter="paid">
+                        مدفوعة
+                    </button>
+                    <button id="filterPending" class="filter-chip" data-filter="pending">
+                        معلقة
+                    </button>
+                    <button id="filterCancelled" class="filter-chip" data-filter="cancelled">
+                        ملغية
+                    </button>
+                </div>
+
+                <!-- Advanced Filters -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-text-primary mb-2">من تاريخ</label>
+                        <input type="date" id="dateFrom" class="input-field" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-primary mb-2">إلى تاريخ</label>
+                        <input type="date" id="dateTo" class="input-field" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-primary mb-2">المبلغ الأدنى</label>
+                        <input type="number" id="minAmount" class="input-field text-right" placeholder="0" />
+                    </div>
+                </div>
+
+                <!-- Filter Actions -->
+                <div class="flex justify-between items-center">
+                    <button id="clearFilters" class="btn-secondary text-sm">
+                        مسح الفلاتر
+                    </button>
+                    <button id="exportData" class="btn-secondary text-sm inline-flex items-center">
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        تصدير البيانات
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="flex justify-between items-center mb-4">
+            <div class="text-text-secondary">
+                عرض <span id="showingCount" class="font-medium text-text-primary">0</span> من <span id="totalCount" class="font-medium text-text-primary">0</span> حجز
+            </div>
+            <div class="flex items-center space-x-2 space-x-reverse">
+                <label class="text-sm text-text-secondary">ترتيب حسب:</label>
+                <select id="sortBy" class="input-field text-sm w-auto">
+                    <option value="date-desc">التاريخ (الأحدث أولاً)</option>
+                    <option value="date-asc">التاريخ (الأقدم أولاً)</option>
+                    <option value="amount-desc">المبلغ (الأعلى أولاً)</option>
+                    <option value="amount-asc">المبلغ (الأقل أولاً)</option>
+                    <option value="name-asc">اسم العميل (أ-ي)</option>
+                    <option value="name-desc">اسم العميل (ي-أ)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="hidden">
+            <div class="space-y-4">
+                <div class="skeleton h-20 rounded-lg"></div>
+                <div class="skeleton h-20 rounded-lg"></div>
+                <div class="skeleton h-20 rounded-lg"></div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-12">
+            <div class="w-24 h-24 bg-secondary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-12 h-12 text-secondary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-text-primary mb-2">لا توجد حجوزات</h3>
+            <p class="text-text-secondary mb-6">لم يتم العثور على أي حجوزات تطابق معايير البحث</p>
+            <a href="add_new_booking.html" class="btn-primary">
+                إضافة حجز جديد
+            </a>
+        </div>
+
+        <!-- Mobile Cards View -->
+        <div id="mobileView" class="block md:hidden">
+            <div id="bookingCards" class="space-y-4">
+                <!-- Booking cards will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Desktop Table View -->
+        <div id="desktopView" class="hidden md:block">
+            <div class="card overflow-hidden">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="min-w-full divide-y divide-secondary-200">
+                        <thead class="bg-surface">
+                            <tr>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider cursor-pointer hover:bg-secondary-100" data-sort="name">
+                                    <div class="flex items-center justify-between">
+                                        <span>اسم العميل</span>
+                                        <svg class="w-4 h-4 text-secondary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
+                                        </svg>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider cursor-pointer hover:bg-secondary-100" data-sort="date">
+                                    <div class="flex items-center justify-between">
+                                        <span>تاريخ الحجز</span>
+                                        <svg class="w-4 h-4 text-secondary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
+                                        </svg>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider">
+                                    المدة
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider cursor-pointer hover:bg-secondary-100" data-sort="amount">
+                                    <div class="flex items-center justify-between">
+                                        <span>المبلغ المدفوع</span>
+                                        <svg class="w-4 h-4 text-secondary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
+                                        </svg>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider">
+                                    الحالة
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider">
+                                    الملاحظات
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider">
+                                    الإجراءات
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingTableBody" class="bg-background divide-y divide-secondary-200">
+                            <!-- Table rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="flex items-center justify-between mt-6">
+            <div class="flex items-center">
+                <span class="text-sm text-text-secondary">
+                    عرض <span id="pageStart">1</span> إلى <span id="pageEnd">10</span> من <span id="pageTotal">0</span> نتيجة
+                </span>
+            </div>
+            <div class="flex items-center space-x-2 space-x-reverse">
+                <button id="prevPage" class="btn-secondary px-3 py-1 text-sm" disabled>
+                    السابق
+                </button>
+                <div id="pageNumbers" class="flex items-center space-x-1 space-x-reverse">
+                    <!-- Page numbers will be inserted here -->
+                </div>
+                <button id="nextPage" class="btn-secondary px-3 py-1 text-sm">
+                    التالي
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Action Button (Mobile) -->
+    <div class="fixed bottom-6 left-6 md:hidden z-30">
+        <a href="add_new_booking.html" class="w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-primary-700 transition-all duration-200 hover:scale-105">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+        </a>
+    </div>
+
+    <script>
+        // Mock booking data
+        const mockBookings = [
+            {
+                id: 1,
+                customerName: 'أحمد محمد العلي',
+                bookingDate: '2025-01-15',
+                days: 3,
+                nights: 2,
+                paidAmount: 1500,
+                status: 'paid',
+                notes: 'حجز عائلي - طلب إفطار إضافي',
+                createdAt: '2025-01-10'
+            },
+            {
+                id: 2,
+                customerName: 'فاطمة أحمد السالم',
+                bookingDate: '2025-01-20',
+                days: 2,
+                nights: 1,
+                paidAmount: 800,
+                status: 'pending',
+                notes: 'حجز لمناسبة خاصة',
+                createdAt: '2025-01-12'
+            },
+            {
+                id: 3,
+                customerName: 'محمد عبدالله الخالد',
+                bookingDate: '2025-01-25',
+                days: 5,
+                nights: 4,
+                paidAmount: 2500,
+                status: 'paid',
+                notes: 'حجز شهر العسل - طلب تزيين خاص',
+                createdAt: '2025-01-14'
+            },
+            {
+                id: 4,
+                customerName: 'سارة محمد الأحمد',
+                bookingDate: '2025-02-01',
+                days: 1,
+                nights: 1,
+                paidAmount: 600,
+                status: 'cancelled',
+                notes: 'تم الإلغاء بسبب ظروف طارئة',
+                createdAt: '2025-01-16'
+            },
+            {
+                id: 5,
+                customerName: 'عبدالرحمن سالم المطيري',
+                bookingDate: '2025-02-10',
+                days: 4,
+                nights: 3,
+                paidAmount: 2000,
+                status: 'paid',
+                notes: 'حجز مع الأصدقاء - طلب شواء',
+                createdAt: '2025-01-18'
+            },
+            {
+                id: 6,
+                customerName: 'نورا عبدالعزيز القحطاني',
+                bookingDate: '2025-02-15',
+                days: 2,
+                nights: 2,
+                paidAmount: 1200,
+                status: 'pending',
+                notes: 'حجز عائلي مع الأطفال',
+                createdAt: '2025-01-20'
+            }
+        ];
+
+        // State management
+        let currentBookings = [...mockBookings];
+        let filteredBookings = [...mockBookings];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let currentSort = 'date-desc';
+        let currentFilter = 'all';
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const filterChips = document.querySelectorAll('.filter-chip');
+        const dateFrom = document.getElementById('dateFrom');
+        const dateTo = document.getElementById('dateTo');
+        const minAmount = document.getElementById('minAmount');
+        const sortBy = document.getElementById('sortBy');
+        const clearFilters = document.getElementById('clearFilters');
+        const exportData = document.getElementById('exportData');
+        const loadingState = document.getElementById('loadingState');
+        const emptyState = document.getElementById('emptyState');
+        const mobileView = document.getElementById('mobileView');
+        const desktopView = document.getElementById('desktopView');
+        const bookingCards = document.getElementById('bookingCards');
+        const bookingTableBody = document.getElementById('bookingTableBody');
+        const showingCount = document.getElementById('showingCount');
+        const totalCount = document.getElementById('totalCount');
+        const pagination = document.getElementById('pagination');
+        const prevPage = document.getElementById('prevPage');
+        const nextPage = document.getElementById('nextPage');
+        const pageNumbers = document.getElementById('pageNumbers');
+        const pageStart = document.getElementById('pageStart');
+        const pageEnd = document.getElementById('pageEnd');
+        const pageTotal = document.getElementById('pageTotal');
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const userMenuButton = document.getElementById('userMenuButton');
+        const userDropdown = document.getElementById('userDropdown');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        userMenuButton.addEventListener('click', () => {
+            userDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userMenuButton.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+            if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+                window.location.href = 'login_authentication.html';
+                return;
+            }
+
+            // Set current user
+            const currentUser = localStorage.getItem('currentUser') || 'admin';
+            document.getElementById('currentUserName').textContent = getUserDisplayName(currentUser);
+
+            // Load existing bookings from localStorage
+            const savedBookings = localStorage.getItem('chaletBookings');
+            if (savedBookings) {
+                const parsedBookings = JSON.parse(savedBookings);
+                currentBookings = [...mockBookings, ...parsedBookings];
+                filteredBookings = [...currentBookings];
+            }
+
+            // Initialize view
+            renderBookings();
+            updateResultsCount();
+            setupEventListeners();
+        });
+
+        function getUserDisplayName(username) {
+            const userNames = {
+                'admin': 'المدير',
+                'owner': 'المالك',
+                'manager': 'مدير الحجوزات'
+            };
+            return userNames[username] || username;
+        }
+
+        function setupEventListeners() {
+            // Search functionality
+            searchInput.addEventListener('input', debounce(handleSearch, 300));
+
+            // Filter chips
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    currentFilter = chip.dataset.filter;
+                    applyFilters();
+                });
+            });
+
+            // Advanced filters
+            dateFrom.addEventListener('change', applyFilters);
+            dateTo.addEventListener('change', applyFilters);
+            minAmount.addEventListener('input', debounce(applyFilters, 300));
+
+            // Sort functionality
+            sortBy.addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                applySort();
+            });
+
+            // Clear filters
+            clearFilters.addEventListener('click', () => {
+                searchInput.value = '';
+                dateFrom.value = '';
+                dateTo.value = '';
+                minAmount.value = '';
+                currentFilter = 'all';
+                filterChips.forEach(c => c.classList.remove('active'));
+                document.getElementById('filterAll').classList.add('active');
+                filteredBookings = [...currentBookings];
+                applySort();
+            });
+
+            // Export functionality
+            exportData.addEventListener('click', exportBookingsData);
+
+            // Pagination
+            prevPage.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderBookings();
+                }
+            });
+
+            nextPage.addEventListener('click', () => {
+                const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderBookings();
+                }
+            });
+
+            // Table sorting
+            document.querySelectorAll('[data-sort]').forEach(header => {
+                header.addEventListener('click', () => {
+                    const sortField = header.dataset.sort;
+                    const currentDirection = currentSort.includes(sortField) && currentSort.includes('asc') ? 'desc' : 'asc';
+                    currentSort = `${sortField}-${currentDirection}`;
+                    sortBy.value = currentSort;
+                    applySort();
+                });
+            });
+        }
+
+        function handleSearch() {
+            const query = searchInput.value.toLowerCase().trim();
+            
+            if (!query) {
+                filteredBookings = [...currentBookings];
+            } else {
+                filteredBookings = currentBookings.filter(booking => 
+                    booking.customerName.toLowerCase().includes(query) ||
+                    booking.notes.toLowerCase().includes(query) ||
+                    booking.id.toString().includes(query) ||
+                    booking.bookingDate.includes(query)
+                );
+            }
+            
+            applyFilters();
+        }
+
+        function applyFilters() {
+            let filtered = [...currentBookings];
+
+            // Apply search
+            const query = searchInput.value.toLowerCase().trim();
+            if (query) {
+                filtered = filtered.filter(booking => 
+                    booking.customerName.toLowerCase().includes(query) ||
+                    booking.notes.toLowerCase().includes(query) ||
+                    booking.id.toString().includes(query) ||
+                    booking.bookingDate.includes(query)
+                );
+            }
+
+            // Apply status filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(booking => booking.status === currentFilter);
+            }
+
+            // Apply date range filter
+            const fromDate = dateFrom.value;
+            const toDate = dateTo.value;
+            
+            if (fromDate) {
+                filtered = filtered.filter(booking => booking.bookingDate >= fromDate);
+            }
+            
+            if (toDate) {
+                filtered = filtered.filter(booking => booking.bookingDate <= toDate);
+            }
+
+            // Apply minimum amount filter
+            const minAmountValue = parseFloat(minAmount.value);
+            if (!isNaN(minAmountValue) && minAmountValue > 0) {
+                filtered = filtered.filter(booking => booking.paidAmount >= minAmountValue);
+            }
+
+            filteredBookings = filtered;
+            currentPage = 1;
+            applySort();
+        }
+
+        function applySort() {
+            const [field, direction] = currentSort.split('-');
+            
+            filteredBookings.sort((a, b) => {
+                let aValue, bValue;
+                
+                switch (field) {
+                    case 'name':
+                        aValue = a.customerName;
+                        bValue = b.customerName;
+                        break;
+                    case 'date':
+                        aValue = new Date(a.bookingDate);
+                        bValue = new Date(b.bookingDate);
+                        break;
+                    case 'amount':
+                        aValue = a.paidAmount;
+                        bValue = b.paidAmount;
+                        break;
+                    default:
+                        aValue = a.bookingDate;
+                        bValue = b.bookingDate;
+                }
+                
+                if (direction === 'asc') {
+                    return aValue > bValue ? 1 : -1;
+                } else {
+                    return aValue < bValue ? 1 : -1;
+                }
+            });
+            
+            renderBookings();
+            updateResultsCount();
+        }
+
+        function renderBookings() {
+            showLoading(true);
+            
+            setTimeout(() => {
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const pageBookings = filteredBookings.slice(startIndex, endIndex);
+                
+                if (pageBookings.length === 0) {
+                    showEmptyState();
+                } else {
+                    hideEmptyState();
+                    renderMobileCards(pageBookings);
+                    renderDesktopTable(pageBookings);
+                    renderPagination();
+                }
+                
+                showLoading(false);
+            }, 500);
+        }
+
+        function renderMobileCards(bookings) {
+            bookingCards.innerHTML = bookings.map(booking => `
+                <div class="card hover:shadow-md transition-shadow duration-200">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-semibold text-text-primary">${booking.customerName}</h3>
+                            <p class="text-sm text-text-secondary">حجز رقم: ${booking.id}</p>
+                        </div>
+                        <div class="flex items-center space-x-2 space-x-reverse">
+                            ${getStatusBadge(booking.status)}
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-xs text-text-secondary mb-1">تاريخ الحجز</p>
+                            <p class="font-medium text-text-primary">${formatDate(booking.bookingDate)}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-text-secondary mb-1">المدة</p>
+                            <p class="font-medium text-text-primary">${booking.days} أيام / ${booking.nights} ليالي</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-text-secondary mb-1">المبلغ المدفوع</p>
+                            <p class="font-semibold text-primary data-mono">${booking.paidAmount.toLocaleString()} ريال</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-text-secondary mb-1">تاريخ الإنشاء</p>
+                            <p class="text-sm text-text-secondary">${formatDate(booking.createdAt)}</p>
+                        </div>
+                    </div>
+                    
+                    ${booking.notes ? `
+                        <div class="mb-4">
+                            <p class="text-xs text-text-secondary mb-1">الملاحظات</p>
+                            <p class="text-sm text-text-primary">${booking.notes}</p>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="flex justify-end space-x-2 space-x-reverse">
+                        <button onclick="viewBookingDetails(${booking.id})" class="btn-secondary text-sm px-3 py-1">
+                            عرض التفاصيل
+                        </button>
+                        <button onclick="editBooking(${booking.id})" class="btn-primary text-sm px-3 py-1">
+                            تعديل
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDesktopTable(bookings) {
+            bookingTableBody.innerHTML = bookings.map(booking => `
+                <tr class="hover:bg-surface transition-colors duration-150">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div>
+                            <div class="text-sm font-medium text-text-primary">${booking.customerName}</div>
+                            <div class="text-sm text-text-secondary">حجز رقم: ${booking.id}</div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-text-primary">${formatDate(booking.bookingDate)}</div>
+                        <div class="text-xs text-text-secondary">تم الإنشاء: ${formatDate(booking.createdAt)}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-text-primary">${booking.days} أيام</div>
+                        <div class="text-xs text-text-secondary">${booking.nights} ليالي</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-semibold text-primary data-mono">${booking.paidAmount.toLocaleString()} ريال</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        ${getStatusBadge(booking.status)}
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-text-primary max-w-xs truncate" title="${booking.notes}">
+                            ${booking.notes || '-'}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2 space-x-reverse">
+                            <button onclick="viewBookingDetails(${booking.id})" class="text-accent hover:text-accent-500 transition-colors">
+                                عرض
+                            </button>
+                            <button onclick="editBooking(${booking.id})" class="text-primary hover:text-primary-700 transition-colors">
+                                تعديل
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredBookings.length);
+            
+            // Update pagination info
+            pageStart.textContent = filteredBookings.length > 0 ? startIndex + 1 : 0;
+            pageEnd.textContent = endIndex;
+            pageTotal.textContent = filteredBookings.length;
+            
+            // Update navigation buttons
+            prevPage.disabled = currentPage === 1;
+            nextPage.disabled = currentPage === totalPages || totalPages === 0;
+            
+            // Generate page numbers
+            pageNumbers.innerHTML = '';
+            
+            if (totalPages <= 7) {
+                // Show all pages
+                for (let i = 1; i <= totalPages; i++) {
+                    pageNumbers.appendChild(createPageButton(i));
+                }
+            } else {
+                // Show first page
+                pageNumbers.appendChild(createPageButton(1));
+                
+                if (currentPage > 4) {
+                    pageNumbers.appendChild(createEllipsis());
+                }
+                
+                // Show pages around current page
+                const start = Math.max(2, currentPage - 1);
+                const end = Math.min(totalPages - 1, currentPage + 1);
+                
+                for (let i = start; i <= end; i++) {
+                    pageNumbers.appendChild(createPageButton(i));
+                }
+                
+                if (currentPage < totalPages - 3) {
+                    pageNumbers.appendChild(createEllipsis());
+                }
+                
+                // Show last page
+                if (totalPages > 1) {
+                    pageNumbers.appendChild(createPageButton(totalPages));
+                }
+            }
+        }
+
+        function createPageButton(page) {
+            const button = document.createElement('button');
+            button.textContent = page;
+            button.className = `px-3 py-1 text-sm rounded-md transition-colors ${
+                page === currentPage 
+                    ? 'bg-primary text-white' 
+                    : 'text-text-secondary hover:text-primary hover:bg-primary-50'
+            }`;
+            button.addEventListener('click', () => {
+                currentPage = page;
+                renderBookings();
+            });
+            return button;
+        }
+
+        function createEllipsis() {
+            const span = document.createElement('span');
+            span.textContent = '...';
+            span.className = 'px-2 text-text-secondary';
+            return span;
+        }
+
+        function getStatusBadge(status) {
+            const statusConfig = {
+                paid: { text: 'مدفوعة', class: 'status-success' },
+                pending: { text: 'معلقة', class: 'status-warning' },
+                cancelled: { text: 'ملغية', class: 'status-error' }
+            };
+            
+            const config = statusConfig[status] || { text: status, class: 'status-warning' };
+            return `<span class="${config.class}">${config.text}</span>`;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ar-SA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function updateResultsCount() {
+            showingCount.textContent = filteredBookings.length;
+            totalCount.textContent = currentBookings.length;
+        }
+
+        function showLoading(show) {
+            if (show) {
+                loadingState.classList.remove('hidden');
+                mobileView.classList.add('hidden');
+                desktopView.classList.add('hidden');
+                emptyState.classList.add('hidden');
+            } else {
+                loadingState.classList.add('hidden');
+                mobileView.classList.remove('hidden');
+                desktopView.classList.remove('hidden');
+            }
+        }
+
+        function showEmptyState() {
+            emptyState.classList.remove('hidden');
+            mobileView.classList.add('hidden');
+            desktopView.classList.add('hidden');
+            pagination.classList.add('hidden');
+        }
+
+        function hideEmptyState() {
+            emptyState.classList.add('hidden');
+            pagination.classList.remove('hidden');
+        }
+
+        function viewBookingDetails(bookingId) {
+            const booking = currentBookings.find(b => b.id === bookingId);
+            if (booking) {
+                alert(`تفاصيل الحجز:\n\nاسم العميل: ${booking.customerName}\nتاريخ الحجز: ${formatDate(booking.bookingDate)}\nالمدة: ${booking.days} أيام / ${booking.nights} ليالي\nالمبلغ: ${booking.paidAmount.toLocaleString()} ريال\nالحالة: ${getStatusText(booking.status)}\nالملاحظات: ${booking.notes || 'لا توجد ملاحظات'}`);
+            }
+        }
+
+        function editBooking(bookingId) {
+            // Store the booking ID for editing
+            localStorage.setItem('editBookingId', bookingId);
+            window.location.href = 'add_new_booking.html';
+        }
+
+        function getStatusText(status) {
+            const statusTexts = {
+                paid: 'مدفوعة',
+                pending: 'معلقة',
+                cancelled: 'ملغية'
+            };
+            return statusTexts[status] || status;
+        }
+
+        function exportBookingsData() {
+            const csvContent = generateCSV(filteredBookings);
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `bookings_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function generateCSV(bookings) {
+            const headers = ['رقم الحجز', 'اسم العميل', 'تاريخ الحجز', 'عدد الأيام', 'عدد الليالي', 'المبلغ المدفوع', 'الحالة', 'الملاحظات', 'تاريخ الإنشاء'];
+            const rows = bookings.map(booking => [
+                booking.id,
+                booking.customerName,
+                booking.bookingDate,
+                booking.days,
+                booking.nights,
+                booking.paidAmount,
+                getStatusText(booking.status),
+                booking.notes || '',
+                booking.createdAt
+            ]);
+            
+            return [headers, ...rows].map(row => 
+                row.map(field => `"${field}"`).join(',')
+            ).join('\n');
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('loginTime');
+            window.location.href = 'login_authentication.html';
+        }
+
+        // Add filter chip styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .filter-chip {
+                @apply px-3 py-1 text-sm rounded-full border border-secondary-200 text-text-secondary transition-all duration-200;
+                @apply hover:border-primary hover:text-primary;
+            }
+            
+            .filter-chip.active {
+                @apply bg-primary text-white border-primary;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

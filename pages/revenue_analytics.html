@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تحليل الإيرادات - نظام إدارة حجوزات الشاليه</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+    </style>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fchaletboo1880back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.6"></script>
+</head>
+<body class="bg-surface min-h-screen">
+    <!-- Header -->
+    <header class="bg-background shadow-sm border-b border-secondary-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center ml-3">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm0 2.84L18 11v8h-2v-6H8v6H6v-8l6-5.16z"/>
+                            </svg>
+                        </div>
+                        <h1 class="text-lg font-semibold text-text-primary">نظام إدارة الشاليه</h1>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-8 space-x-reverse">
+                    <a href="dashboard_overview.html" class="text-text-secondary hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium">
+                        لوحة التحكم
+                    </a>
+                    <a href="add_new_booking.html" class="text-text-secondary hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium">
+                        حجز جديد
+                    </a>
+                    <a href="view_all_bookings.html" class="text-text-secondary hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium">
+                        عرض الحجوزات
+                    </a>
+                    <a href="revenue_analytics.html" class="text-primary bg-primary-50 px-3 py-2 rounded-md text-sm font-medium">
+                        تحليل الإيرادات
+                    </a>
+                </nav>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobileMenuButton" class="text-text-secondary hover:text-primary p-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- User Menu -->
+                <div class="flex items-center">
+                    <div class="relative">
+                        <button id="userMenuButton" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-primary">
+                            <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                                <svg class="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                        </button>
+                        <div id="userDropdown" class="hidden absolute left-0 mt-2 w-48 bg-background rounded-md shadow-lg py-1 z-50">
+                            <a href="javascript:void(0)" class="block px-4 py-2 text-sm text-text-secondary hover:bg-surface">الملف الشخصي</a>
+                            <a href="javascript:void(0)" class="block px-4 py-2 text-sm text-text-secondary hover:bg-surface">الإعدادات</a>
+                            <hr class="my-1" />
+                            <a href="login_authentication.html" class="block px-4 py-2 text-sm text-text-secondary hover:bg-surface">تسجيل الخروج</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div id="mobileMenu" class="hidden md:hidden bg-background border-t border-secondary-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="dashboard_overview.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-md text-base font-medium">
+                    لوحة التحكم
+                </a>
+                <a href="add_new_booking.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-md text-base font-medium">
+                    حجز جديد
+                </a>
+                <a href="view_all_bookings.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-md text-base font-medium">
+                    عرض الحجوزات
+                </a>
+                <a href="revenue_analytics.html" class="block px-3 py-2 text-primary bg-primary-50 rounded-md text-base font-medium">
+                    تحليل الإيرادات
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-8" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3 space-x-reverse">
+                <li class="inline-flex items-center">
+                    <a href="dashboard_overview.html" class="inline-flex items-center text-sm font-medium text-text-secondary hover:text-primary">
+                        <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                        </svg>
+                        لوحة التحكم
+                    </a>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <svg class="w-6 h-6 text-secondary-400 rotate-180" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="mr-1 text-sm font-medium text-text-primary">تحليل الإيرادات</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-text-primary mb-2">تحليل الإيرادات</h1>
+            <p class="text-text-secondary">تتبع الأداء المالي وتحليل الإيرادات عبر فترات زمنية مختلفة</p>
+        </div>
+
+        <!-- Time Period Selector -->
+        <div class="mb-8">
+            <div class="card">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <label class="text-sm font-medium text-text-primary">الفترة الزمنية:</label>
+                        <div class="flex bg-secondary-100 rounded-lg p-1">
+                            <button id="weeklyBtn" class="px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 bg-primary text-white">
+                                أسبوعي
+                            </button>
+                            <button id="monthlyBtn" class="px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-text-secondary hover:text-primary">
+                                شهري
+                            </button>
+                            <button id="yearlyBtn" class="px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-text-secondary hover:text-primary">
+                                سنوي
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-text-primary">من:</label>
+                            <input type="date" id="startDate" class="input-field text-sm w-auto" />
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-text-primary">إلى:</label>
+                            <input type="date" id="endDate" class="input-field text-sm w-auto" />
+                        </div>
+                        <button id="exportBtn" class="btn-secondary text-sm">
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            تصدير
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Revenue -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-text-secondary">إجمالي الإيرادات</p>
+                        <p class="text-2xl font-bold text-text-primary data-mono" id="totalRevenue">٢٤,٥٠٠ ر.س</p>
+                        <div class="flex items-center mt-2">
+                            <svg class="w-4 h-4 text-success ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-sm text-success font-medium">+١٢.٥%</span>
+                        </div>
+                    </div>
+                    <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Average Booking Value -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-text-secondary">متوسط قيمة الحجز</p>
+                        <p class="text-2xl font-bold text-text-primary data-mono" id="avgBookingValue">١,٢٢٥ ر.س</p>
+                        <div class="flex items-center mt-2">
+                            <svg class="w-4 h-4 text-success ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-sm text-success font-medium">+٨.٣%</span>
+                        </div>
+                    </div>
+                    <div class="w-12 h-12 bg-accent-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Occupancy Rate -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-text-secondary">معدل الإشغال</p>
+                        <p class="text-2xl font-bold text-text-primary data-mono" id="occupancyRate">٧٨.٥%</p>
+                        <div class="flex items-center mt-2">
+                            <svg class="w-4 h-4 text-warning ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-sm text-warning font-medium">-٢.١%</span>
+                        </div>
+                    </div>
+                    <div class="w-12 h-12 bg-success-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Bookings -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-text-secondary">إجمالي الحجوزات</p>
+                        <p class="text-2xl font-bold text-text-primary data-mono" id="totalBookings">٢٠</p>
+                        <div class="flex items-center mt-2">
+                            <svg class="w-4 h-4 text-success ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-sm text-success font-medium">+١٥.٠%</span>
+                        </div>
+                    </div>
+                    <div class="w-12 h-12 bg-warning-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Revenue Trend Chart -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-text-primary">اتجاه الإيرادات</h3>
+                    <div class="flex items-center gap-2">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-primary rounded-full ml-2"></div>
+                            <span class="text-sm text-text-secondary">الإيرادات</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-accent rounded-full ml-2"></div>
+                            <span class="text-sm text-text-secondary">الهدف</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-64 flex items-end justify-between gap-2" id="revenueChart">
+                    <!-- Chart bars will be generated by JavaScript -->
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 bg-primary rounded-t" style="height: 120px;"></div>
+                        <span class="text-xs text-text-secondary mt-2">الأسبوع ١</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 bg-primary rounded-t" style="height: 180px;"></div>
+                        <span class="text-xs text-text-secondary mt-2">الأسبوع ٢</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 bg-primary rounded-t" style="height: 150px;"></div>
+                        <span class="text-xs text-text-secondary mt-2">الأسبوع ٣</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 bg-primary rounded-t" style="height: 200px;"></div>
+                        <span class="text-xs text-text-secondary mt-2">الأسبوع ٤</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 bg-primary rounded-t" style="height: 160px;"></div>
+                        <span class="text-xs text-text-secondary mt-2">الأسبوع ٥</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 bg-primary rounded-t" style="height: 190px;"></div>
+                        <span class="text-xs text-text-secondary mt-2">الأسبوع ٦</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Distribution -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-text-primary">توزيع الحجوزات</h3>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-primary rounded ml-3"></div>
+                            <span class="text-sm text-text-primary">حجوزات نهاية الأسبوع</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium text-text-primary ml-2">٦٥%</span>
+                            <div class="w-24 h-2 bg-secondary-200 rounded-full">
+                                <div class="w-16 h-2 bg-primary rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-accent rounded ml-3"></div>
+                            <span class="text-sm text-text-primary">حجوزات أيام الأسبوع</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium text-text-primary ml-2">٣٥%</span>
+                            <div class="w-24 h-2 bg-secondary-200 rounded-full">
+                                <div class="w-8 h-2 bg-accent rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-success rounded ml-3"></div>
+                            <span class="text-sm text-text-primary">حجوزات طويلة المدى</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium text-text-primary ml-2">٢٨%</span>
+                            <div class="w-24 h-2 bg-secondary-200 rounded-full">
+                                <div class="w-7 h-2 bg-success rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-warning rounded ml-3"></div>
+                            <span class="text-sm text-text-primary">حجوزات قصيرة المدى</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium text-text-primary ml-2">٧٢%</span>
+                            <div class="w-24 h-2 bg-secondary-200 rounded-full">
+                                <div class="w-18 h-2 bg-warning rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Summary Table -->
+        <div class="card-elevated">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-text-primary">ملخص الإيرادات</h3>
+                <div class="flex items-center gap-2">
+                    <button class="btn-secondary text-sm">
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                        </svg>
+                        تصفية
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="tableLoading" class="hidden">
+                <div class="space-y-4">
+                    <div class="skeleton h-4 w-full"></div>
+                    <div class="skeleton h-4 w-3/4"></div>
+                    <div class="skeleton h-4 w-1/2"></div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="min-w-full divide-y divide-secondary-200">
+                    <thead class="bg-surface">
+                        <tr>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider cursor-pointer hover:bg-secondary-100 transition-colors">
+                                الفترة
+                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
+                                </svg>
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider cursor-pointer hover:bg-secondary-100 transition-colors">
+                                عدد الحجوزات
+                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
+                                </svg>
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider cursor-pointer hover:bg-secondary-100 transition-colors">
+                                إجمالي الإيرادات
+                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
+                                </svg>
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider cursor-pointer hover:bg-secondary-100 transition-colors">
+                                متوسط القيمة
+                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
+                                </svg>
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider">
+                                النمو
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-background divide-y divide-secondary-200" id="revenueTableBody">
+                        <tr class="hover:bg-surface transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
+                                الأسبوع الأول - يناير ٢٠٢٥
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">٥</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">٦,١٢٥ ر.س</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">١,٢٢٥ ر.س</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="status-success">+١٢.٥%</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-surface transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
+                                الأسبوع الثاني - يناير ٢٠٢٥
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">٧</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">٨,٥٧٥ ر.س</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">١,٢٢٥ ر.س</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="status-success">+٤٠.٠%</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-surface transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
+                                الأسبوع الثالث - يناير ٢٠٢٥
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">٤</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">٤,٩٠٠ ر.س</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">١,٢٢٥ ر.س</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="status-warning">-٤٢.٩%</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-surface transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
+                                الأسبوع الرابع - يناير ٢٠٢٥
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">٤</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">٤,٩٠٠ ر.س</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">١,٢٢٥ ر.س</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="status-success">٠.٠%</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // DOM Elements
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const userMenuButton = document.getElementById('userMenuButton');
+        const userDropdown = document.getElementById('userDropdown');
+        const weeklyBtn = document.getElementById('weeklyBtn');
+        const monthlyBtn = document.getElementById('monthlyBtn');
+        const yearlyBtn = document.getElementById('yearlyBtn');
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+        const exportBtn = document.getElementById('exportBtn');
+        const tableLoading = document.getElementById('tableLoading');
+        const revenueTableBody = document.getElementById('revenueTableBody');
+
+        // Mobile menu toggle
+        mobileMenuButton.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // User dropdown toggle
+        userMenuButton.addEventListener('click', function() {
+            userDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
+                userDropdown.classList.add('hidden');
+            }
+            if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+
+        // Time period selector
+        const periodButtons = [weeklyBtn, monthlyBtn, yearlyBtn];
+        
+        function setActivePeriod(activeBtn) {
+            periodButtons.forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white');
+                btn.classList.add('text-text-secondary', 'hover:text-primary');
+            });
+            activeBtn.classList.add('bg-primary', 'text-white');
+            activeBtn.classList.remove('text-text-secondary', 'hover:text-primary');
+        }
+
+        weeklyBtn.addEventListener('click', function() {
+            setActivePeriod(this);
+            updateAnalytics('weekly');
+        });
+
+        monthlyBtn.addEventListener('click', function() {
+            setActivePeriod(this);
+            updateAnalytics('monthly');
+        });
+
+        yearlyBtn.addEventListener('click', function() {
+            setActivePeriod(this);
+            updateAnalytics('yearly');
+        });
+
+        // Mock data for different periods
+        const analyticsData = {
+            weekly: {
+                totalRevenue: '٢٤,٥٠٠ ر.س',
+                avgBookingValue: '١,٢٢٥ ر.س',
+                occupancyRate: '٧٨.٥%',
+                totalBookings: '٢٠',
+                tableData: [
+                    { period: 'الأسبوع الأول - يناير ٢٠٢٥', bookings: '٥', revenue: '٦,١٢٥ ر.س', avgValue: '١,٢٢٥ ر.س', growth: '+١٢.٥%', growthType: 'success' },
+                    { period: 'الأسبوع الثاني - يناير ٢٠٢٥', bookings: '٧', revenue: '٨,٥٧٥ ر.س', avgValue: '١,٢٢٥ ر.س', growth: '+٤٠.٠%', growthType: 'success' },
+                    { period: 'الأسبوع الثالث - يناير ٢٠٢٥', bookings: '٤', revenue: '٤,٩٠٠ ر.س', avgValue: '١,٢٢٥ ر.س', growth: '-٤٢.٩%', growthType: 'warning' },
+                    { period: 'الأسبوع الرابع - يناير ٢٠٢٥', bookings: '٤', revenue: '٤,٩٠٠ ر.س', avgValue: '١,٢٢٥ ر.س', growth: '٠.٠%', growthType: 'success' }
+                ]
+            },
+            monthly: {
+                totalRevenue: '٩٨,٢٠٠ ر.س',
+                avgBookingValue: '١,٣٧٥ ر.س',
+                occupancyRate: '٨٢.٣%',
+                totalBookings: '٧١',
+                tableData: [
+                    { period: 'يناير ٢٠٢٥', bookings: '٢٠', revenue: '٢٤,٥٠٠ ر.س', avgValue: '١,٢٢٥ ر.س', growth: '+١٢.٥%', growthType: 'success' },
+                    { period: 'ديسمبر ٢٠٢٤', bookings: '١٨', revenue: '٢٤,٧٥٠ ر.س', avgValue: '١,٣٧٥ ر.س', growth: '+٨.٣%', growthType: 'success' },
+                    { period: 'نوفمبر ٢٠٢٤', bookings: '١٦', revenue: '٢٢,٠٠٠ ر.س', avgValue: '١,٣٧٥ ر.س', growth: '-١١.١%', growthType: 'warning' },
+                    { period: 'أكتوبر ٢٠٢٤', bookings: '١٧', revenue: '٢٦,٩٥٠ ر.س', avgValue: '١,٥٨٥ ر.س', growth: '+٦.٢%', growthType: 'success' }
+                ]
+            },
+            yearly: {
+                totalRevenue: '٤٩٢,٨٠٠ ر.س',
+                avgBookingValue: '١,٤٢٠ ر.س',
+                occupancyRate: '٧٥.٨%',
+                totalBookings: '٣٤٧',
+                tableData: [
+                    { period: '٢٠٢٥', bookings: '٢٠', revenue: '٢٤,٥٠٠ ر.س', avgValue: '١,٢٢٥ ر.س', growth: '+١٢.٥%', growthType: 'success' },
+                    { period: '٢٠٢٤', bookings: '٣٢٧', revenue: '٤٦٨,٣٠٠ ر.س', avgValue: '١,٤٣٢ ر.س', growth: '+١٨.٧%', growthType: 'success' },
+                    { period: '٢٠٢٣', bookings: '٢٨٥', revenue: '٣٩٤,٧٥٠ ر.س', avgValue: '١,٣٨٥ ر.س', growth: '+٢٢.٣%', growthType: 'success' },
+                    { period: '٢٠٢٢', bookings: '٢٣٣', revenue: '٣٢٢,٨٥٠ ر.س', avgValue: '١,٣٨٥ ر.س', growth: '+١٥.٦%', growthType: 'success' }
+                ]
+            }
+        };
+
+        // Update analytics display
+        function updateAnalytics(period) {
+            const data = analyticsData[period];
+            
+            // Show loading state
+            tableLoading.classList.remove('hidden');
+            revenueTableBody.style.opacity = '0.5';
+            
+            // Update metrics with animation
+            setTimeout(() => {
+                document.getElementById('totalRevenue').textContent = data.totalRevenue;
+                document.getElementById('avgBookingValue').textContent = data.avgBookingValue;
+                document.getElementById('occupancyRate').textContent = data.occupancyRate;
+                document.getElementById('totalBookings').textContent = data.totalBookings;
+                
+                // Update table
+                updateTable(data.tableData);
+                
+                // Hide loading state
+                tableLoading.classList.add('hidden');
+                revenueTableBody.style.opacity = '1';
+            }, 800);
+        }
+
+        // Update table data
+        function updateTable(data) {
+            revenueTableBody.innerHTML = '';
+            
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-surface transition-colors';
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
+                        ${row.period}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">${row.bookings}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">${row.revenue}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary data-mono">${row.avgValue}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="status-${row.growthType}">${row.growth}</span>
+                    </td>
+                `;
+                revenueTableBody.appendChild(tr);
+            });
+        }
+
+        // Export functionality
+        exportBtn.addEventListener('click', function() {
+            // Simulate export process
+            const originalText = this.innerHTML;
+            this.innerHTML = `
+                <svg class="w-4 h-4 ml-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                جاري التصدير...
+            `;
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.disabled = false;
+                
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.className = 'fixed top-4 left-4 bg-success text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-slide-up';
+                successMsg.textContent = 'تم تصدير التقرير بنجاح';
+                document.body.appendChild(successMsg);
+                
+                setTimeout(() => {
+                    successMsg.remove();
+                }, 3000);
+            }, 2000);
+        });
+
+        // Set default date range
+        const today = new Date();
+        const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        
+        startDate.value = oneWeekAgo.toISOString().split('T')[0];
+        endDate.value = today.toISOString().split('T')[0];
+
+        // Date range change handler
+        [startDate, endDate].forEach(input => {
+            input.addEventListener('change', function() {
+                // Simulate data refresh
+                updateAnalytics(document.querySelector('.bg-primary').id.replace('Btn', '').toLowerCase());
+            });
+        });
+
+        // Check authentication
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login_authentication.html';
+        }
+
+        // Initialize with weekly view
+        updateAnalytics('weekly');
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

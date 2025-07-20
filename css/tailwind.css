@@ -1,0 +1,203 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Primary Colors */
+  --color-primary: #2563EB; /* blue-600 - Trust-building blue for financial data */
+  --color-primary-50: #EFF6FF; /* blue-50 */
+  --color-primary-100: #DBEAFE; /* blue-100 */
+  --color-primary-500: #3B82F6; /* blue-500 */
+  --color-primary-600: #2563EB; /* blue-600 */
+  --color-primary-700: #1D4ED8; /* blue-700 */
+  
+  /* Secondary Colors */
+  --color-secondary: #64748B; /* slate-500 - Professional neutral contrast */
+  --color-secondary-100: #F1F5F9; /* slate-100 */
+  --color-secondary-200: #E2E8F0; /* slate-200 */
+  --color-secondary-400: #94A3B8; /* slate-400 */
+  --color-secondary-500: #64748B; /* slate-500 */
+  --color-secondary-600: #475569; /* slate-600 */
+  
+  /* Accent Colors */
+  --color-accent: #0EA5E9; /* sky-500 - Interactive elements and positive feedback */
+  --color-accent-100: #E0F2FE; /* sky-100 */
+  --color-accent-500: #0EA5E9; /* sky-500 */
+  
+  /* Background Colors */
+  --color-background: #FFFFFF; /* white - Pure white for maximum readability */
+  --color-surface: #F8FAFC; /* slate-50 - Subtle off-white for card backgrounds */
+  
+  /* Text Colors */
+  --color-text-primary: #1E293B; /* slate-800 - Deep charcoal for primary text */
+  --color-text-secondary: #64748B; /* slate-500 - Medium gray for supporting information */
+  
+  /* Status Colors */
+  --color-success: #059669; /* emerald-600 - Successful bookings and positive indicators */
+  --color-success-100: #D1FAE5; /* emerald-100 */
+  --color-success-500: #10B981; /* emerald-500 */
+  --color-success-600: #059669; /* emerald-600 */
+  
+  --color-warning: #D97706; /* amber-600 - Attention-requiring states */
+  --color-warning-100: #FEF3C7; /* amber-100 */
+  --color-warning-500: #F59E0B; /* amber-500 */
+  --color-warning-600: #D97706; /* amber-600 */
+  
+  --color-error: #DC2626; /* red-600 - Form errors and critical issues */
+  --color-error-100: #FEE2E2; /* red-100 */
+  --color-error-500: #EF4444; /* red-500 */
+  --color-error-600: #DC2626; /* red-600 */
+}
+
+@layer base {
+  html {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  body {
+    @apply bg-background text-text-primary;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  
+  /* RTL Support */
+  [dir="rtl"] {
+    direction: rtl;
+  }
+  
+  [dir="rtl"] .rtl\:text-right {
+    text-align: right;
+  }
+  
+  [dir="rtl"] .rtl\:text-left {
+    text-align: left;
+  }
+}
+
+@layer components {
+  /* Button Micro-interactions */
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 ease-out;
+    @apply hover:bg-primary-700 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-100 text-secondary-600 px-4 py-2 rounded-lg font-medium transition-all duration-200 ease-out;
+    @apply hover:bg-secondary-200 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2;
+  }
+  
+  /* Form Input States */
+  .input-field {
+    @apply w-full px-3 py-2 border border-secondary-200 rounded-lg transition-all duration-200 ease-out;
+    @apply focus:border-primary focus:ring-2 focus:ring-primary-100 focus:outline-none;
+    @apply placeholder:text-secondary-400;
+  }
+  
+  .input-error {
+    @apply border-error focus:border-error focus:ring-error-100;
+  }
+  
+  .input-success {
+    @apply border-success focus:border-success focus:ring-success-100;
+  }
+  
+  /* Card Components */
+  .card {
+    @apply bg-surface rounded-lg shadow-sm border border-secondary-200/50 p-6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-elevated {
+    @apply bg-background rounded-lg p-6;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Progressive Disclosure */
+  .expandable-card {
+    @apply transition-all duration-200 ease-out cursor-pointer;
+    @apply hover:shadow-md hover:-translate-y-0.5;
+  }
+  
+  /* Loading States */
+  .skeleton {
+    @apply bg-secondary-200 animate-pulse rounded;
+  }
+  
+  .shimmer {
+    @apply relative overflow-hidden bg-secondary-100;
+  }
+  
+  .shimmer::after {
+    @apply absolute inset-0 -translate-x-full;
+    content: '';
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    animation: shimmer 1.5s infinite;
+  }
+  
+  /* Touch-friendly interactions */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+  
+  /* Data display */
+  .data-mono {
+    font-family: 'JetBrains Mono', monospace;
+    @apply tabular-nums;
+  }
+}
+
+@layer utilities {
+  /* Text utilities */
+  .text-heading {
+    @apply text-text-primary font-semibold;
+  }
+  
+  .text-body {
+    @apply text-text-primary font-normal;
+  }
+  
+  .text-caption {
+    @apply text-text-secondary text-sm font-normal;
+  }
+  
+  .text-data {
+    font-family: 'JetBrains Mono', monospace;
+    @apply tabular-nums;
+  }
+  
+  /* Status utilities */
+  .status-success {
+    @apply text-success bg-success-100 px-2 py-1 rounded-md text-sm font-medium;
+  }
+  
+  .status-warning {
+    @apply text-warning bg-warning-100 px-2 py-1 rounded-md text-sm font-medium;
+  }
+  
+  .status-error {
+    @apply text-error bg-error-100 px-2 py-1 rounded-md text-sm font-medium;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-secondary-100;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb  {
+  @apply rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-secondary-400;
+}
