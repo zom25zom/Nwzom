@@ -1,7 +1,7 @@
 // Supabase Configuration
 // ⚠️ يجب تحديث هذه القيم بقيم مشروعك الخاص في Supabase
-const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL'; // استبدل بـ Project URL الخاص بك
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // استبدل بـ anon public key الخاص بك
+const SUPABASE_URL = 'https://zjtrypxtkqnblyufflug.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdHJ5cHh0a3FuYmx5dWZmbHVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMzMzNzMsImV4cCI6MjA2ODYwOTM3M30.6xXI6VfCkm6E42orU-NUnMdAmAMS6FsLzA2A3Nj9CYw';
 
 // Initialize Supabase client
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
